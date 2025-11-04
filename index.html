@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Công bố người trúng giải</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .input-section {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+    }
+
+    .input-section h1 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      padding: 15px 20px;
+      font-size: 1.2em;
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      width: 150px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .btn {
+      padding: 15px 40px;
+      font-size: 1.2em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover { transform: scale(1.05); }
+
+    .winners-section { display: none; }
+    .winners-section.show { display: block; }
+
+    .winners-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      align-items: end;
+    }
+
+    .winner-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+      animation: slideIn 0.5s ease-out;
+      position: relative;
+    }
+
+    .winner-card:hover { transform: translateY(-10px); }
+
+    .winner-card.top1 {
+      transform: scale(1.2);
+      z-index: 5;
+      border: 5px solid gold;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .winner-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      background: #f0f0f0;
+    }
+
+    .winner-info {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .winner-code {
+      font-size: 2em;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .winner-name { font-size: 1.5em; font-weight: bold; color: #333; margin-bottom: 5px; }
+    .winner-school { font-size: 1.1em; color: #666; margin-bottom: 5px; }
+    .winner-age { font-size: 1em; color: #999; }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.5em;
+      color: white;
+    }
+
+    .error {
+      background: #ff6b6b;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 900px) {
+      .winners-grid { grid-template-columns: 1fr; }
+      .winner-card.top1 { transform: scale(1); border: 3px solid gold; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="input-section" id="inputSection">
+      <h1>🎉 CÔNG BỐ NGƯỜI TRÚNG GIẢI 🎉</h1>
+      <div class="input-group">
+        <input type="text" id="code1" placeholder="#001" maxlength="4">
+        <input type="text" id="code2" placeholder="#002" maxlength="4">
+        <input type="text" id="code3" placeholder="#003" maxlength="4">
+        <button class="btn" onclick="loadWinners()">HIỂN THỊ NGƯỜI THẮNG</button>
+      </div>
+      <div style="text-align: center; color: #666; margin-top: 10px;">
+        Nhập 3 mã số (vd: #001, #002, #003) — người top 1 sẽ hiển thị ở giữa.
+      </div>
+    </div>
+
+    <div class="loading" id="loading" style="display: none;">⏳ Đang tải thông tin...</div>
+    <div class="error" id="error" style="display: none;"></div>
+
+    <div class="winners-section" id="winnersSection">
+      <div class="winners-grid" id="winnersGrid"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    const SHEET_ID = "1ZID_T4OaP5fUs2q1iQXefVBs0H--MgM9DtBQz2WOm7M";
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+    async function loadWinners() {
+      const code1 = document.getElementById('code1').value.trim();
+      const code2 = document.getElementById('code2').value.trim();
+      const code3 = document.getElementById('code3').value.trim();
+      if (!code1 || !code2 || !code3) return alert('Vui lòng nhập đủ 3 mã số!');
+
+      const codes = [code1, code2, code3].map(c => (c.startsWith('#') ? c : '#' + c));
+
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('winnersSection').classList.remove('show');
+
+      try {
+        const res = await fetch(SHEET_CSV_URL);
+        const csvText = await res.text();
+
+        Papa.parse(csvText, {
+          header: false,
+          complete: function(results) {
+            const data = results.data;
+            const found = [];
+
+            for (let i = 1; i < data.length; i++) {
+              const row = data[i];
+              const code = row[4];
+              if (codes.includes(code)) {
+                found.push({
+                  name: row[0],
+                  school: row[1],
+                  age: row[2],
+                  image: row[3],
+                  code: row[4]
+                });
+              }
+            }
+
+            if (found.length !== 3) {
+              document.getElementById('error').textContent = '❌ Không tìm đủ 3 người thắng!';
+              document.getElementById('error').style.display = 'block';
+              document.getElementById('loading').style.display = 'none';
+              return;
+            }
+
+            // sắp xếp theo thứ tự: top2 - top1 - top3
+            const ordered = [found[1], found[0], found[2]];
+            displayWinners(ordered);
+            document.getElementById('loading').style.display = 'none';
+          }
+        });
+      } catch (e) {
+        document.getElementById('error').textContent = '❌ Lỗi tải dữ liệu';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+
+    function displayWinners(winners) {
+      const grid = document.getElementById('winnersGrid');
+      grid.innerHTML = '';
+
+      winners.forEach((w, i) => {
+        const card = document.createElement('div');
+        card.className = 'winner-card';
+        if (i === 1) card.classList.add('top1'); // Người top 1 ở giữa
+        card.innerHTML = `
+          <img src="${w.image}" class="winner-image" alt="${w.name}">
+          <div class="winner-info">
+            <div class="winner-code">${i === 1 ? '🏆' : '🎖️'} ${w.code}</div>
+            <div class="winner-name">${w.name}</div>
+            <div class="winner-school">${w.school}</div>
+            <div class="winner-age">Tuổi: ${w.age}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      document.getElementById('winnersSection').classList.add('show');
+      grid.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    ['code1','code2','code3'].forEach(id=>{
+      document.getElementById(id).addEventListener('input', e=>{
+        let val = e.target.value.toUpperCase();
+        if (val && !val.startsWith('#')) val = '#' + val;
+        e.target.value = val;
+      });
+      document.getElementById(id).addEventListener('keypress', e=>{
+        if (e.key === 'Enter') loadWinners();
+      });
+    });
+  </script>
+</body>
+</html>
