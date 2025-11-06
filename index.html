@@ -16,14 +16,19 @@
       color: #333;
     }
 
-    .container { max-width: 1600px; margin: 0 auto; }
+    .container { 
+      max-width: 1800px; 
+      margin: 0 auto; 
+    }
 
     .input-section {
       background: white;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      margin-bottom: 40px;
+      margin-bottom: 80px;
+      position: relative;
+      z-index: 100;
     }
 
     .input-section h1 {
@@ -65,15 +70,21 @@
 
     .btn:hover { transform: scale(1.05); }
 
-    .winners-section { display: none; }
+    .winners-section { 
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+    
     .winners-section.show { display: block; }
 
     .winners-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 50px;
-      align-items: end;
-      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 80px;
+      padding: 40px 20px;
+      flex-wrap: wrap;
     }
 
     .winner-card {
@@ -81,63 +92,68 @@
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      transition: transform 0.3s;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      width: 380px;
+      flex-shrink: 0;
+    }
+
+    .winner-card.position-2,
+    .winner-card.position-3 {
+      margin-top: 60px;
     }
 
     .winner-card.top1 {
-      transform: translateY(-30px);
-      border: 5px solid gold;
-      box-shadow: 0 0 35px rgba(255, 215, 0, 0.6);
+      border: 6px solid gold;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
     }
 
     .winner-image-wrapper {
       width: 100%;
-      min-height: 300px;
+      height: 400px;
       background: #f4f4f4;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
+      overflow: hidden;
     }
 
     .winner-image {
       max-width: 100%;
-      max-height: 350px;
+      max-height: 100%;
       width: auto;
       height: auto;
       object-fit: contain;
+      display: block;
     }
 
     .winner-info {
-      padding: 25px;
+      padding: 30px 20px;
       text-align: center;
+      background: white;
     }
 
     .winner-code { 
-      font-size: 2em; 
+      font-size: 2.2em; 
       font-weight: bold; 
       color: #667eea; 
-      margin-bottom: 10px; 
+      margin-bottom: 12px; 
     }
     
     .winner-name { 
-      font-size: 1.5em; 
+      font-size: 1.6em; 
       font-weight: bold; 
-      margin-bottom: 8px; 
+      margin-bottom: 10px; 
       color: #333;
     }
     
     .winner-school { 
-      font-size: 1.1em; 
+      font-size: 1.2em; 
       color: #666; 
-      margin-bottom: 5px; 
+      margin-bottom: 8px; 
     }
     
     .winner-age { 
-      font-size: 1em; 
+      font-size: 1.1em; 
       color: #999; 
     }
 
@@ -154,19 +170,40 @@
       padding: 20px; 
       border-radius: 10px;
       text-align: center; 
-      margin: 20px 0;
+      margin: 20px auto;
       font-size: 1.2em;
+      max-width: 600px;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1400px) {
       .winners-grid { 
-        grid-template-columns: 1fr; 
-        gap: 30px;
+        gap: 40px;
       }
       
-      .winner-card.top1 { 
-        transform: translateY(0);
-        border: 4px solid gold; 
+      .winner-card {
+        width: 320px;
+      }
+
+      .winner-image-wrapper {
+        height: 350px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .winners-grid { 
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+      }
+      
+      .winner-card.position-2,
+      .winner-card.position-3 {
+        margin-top: 0;
+      }
+
+      .winner-card {
+        width: 100%;
+        max-width: 450px;
       }
       
       .container {
@@ -219,6 +256,7 @@
 
         Papa.parse(csvText, {
           header: false,
+          skipEmptyLines: true,
           complete: (results) => {
             const data = results.data;
             const found = [];
@@ -236,12 +274,16 @@
             }
 
             if (found.length !== 3) {
-              showError("❌ Không tìm đủ 3 người trúng giải!");
+              showError("❌ Không tìm đủ 3 người trúng giải! Tìm thấy: " + found.length);
               return;
             }
 
             const ordered = [found[1], found[0], found[2]];
             displayWinners(ordered);
+          },
+          error: (error) => {
+            showError("❌ Lỗi phân tích dữ liệu!");
+            console.error(error);
           }
         });
       } catch (error) {
@@ -262,11 +304,11 @@
 
       winners.forEach((w, i) => {
         const card = document.createElement('div');
-        card.className = `winner-card ${i === 1 ? 'top1' : ''}`;
+        card.className = `winner-card position-${i + 1} ${i === 1 ? 'top1' : ''}`;
         
         card.innerHTML = `
           <div class="winner-image-wrapper">
-            <img src="${w.image}" class="winner-image" alt="${w.name}">
+            <img src="${w.image}" class="winner-image" alt="${w.name}" loading="lazy">
           </div>
           <div class="winner-info">
             <div class="winner-code">${i === 1 ? '🏆' : '🎖️'} ${w.code}</div>
