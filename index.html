@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Công bố người trúng giải</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,19 +13,17 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
+      color: #333;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1600px; margin: 0 auto; }
 
     .input-section {
       background: white;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .input-section h1 {
@@ -32,6 +31,7 @@
       color: #667eea;
       margin-bottom: 20px;
       font-size: 2em;
+      font-weight: bold;
     }
 
     .input-group {
@@ -39,8 +39,6 @@
       gap: 15px;
       flex-wrap: wrap;
       justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
     }
 
     .input-group input {
@@ -73,8 +71,9 @@
     .winners-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      gap: 50px;
       align-items: end;
+      padding: 20px;
     }
 
     .winner-card {
@@ -83,90 +82,120 @@
       overflow: hidden;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       transition: transform 0.3s;
-      animation: slideIn 0.5s ease-out;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
-
-    .winner-card:hover { transform: translateY(-10px); }
 
     .winner-card.top1 {
-      transform: scale(1.2);
-      z-index: 5;
+      transform: translateY(-30px);
       border: 5px solid gold;
-      box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.6);
     }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
+    .winner-image-wrapper {
+      width: 100%;
+      min-height: 300px;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
     .winner-image {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      background: #f0f0f0;
+      max-width: 100%;
+      max-height: 350px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
     }
 
     .winner-info {
-      padding: 20px;
+      padding: 25px;
       text-align: center;
     }
 
-    .winner-code {
-      font-size: 2em;
-      font-weight: bold;
-      color: #667eea;
-      margin-bottom: 10px;
+    .winner-code { 
+      font-size: 2em; 
+      font-weight: bold; 
+      color: #667eea; 
+      margin-bottom: 10px; 
+    }
+    
+    .winner-name { 
+      font-size: 1.5em; 
+      font-weight: bold; 
+      margin-bottom: 8px; 
+      color: #333;
+    }
+    
+    .winner-school { 
+      font-size: 1.1em; 
+      color: #666; 
+      margin-bottom: 5px; 
+    }
+    
+    .winner-age { 
+      font-size: 1em; 
+      color: #999; 
     }
 
-    .winner-name { font-size: 1.5em; font-weight: bold; color: #333; margin-bottom: 5px; }
-    .winner-school { font-size: 1.1em; color: #666; margin-bottom: 5px; }
-    .winner-age { font-size: 1em; color: #999; }
-
-    .loading {
-      text-align: center;
-      padding: 50px;
-      font-size: 1.5em;
-      color: white;
+    .loading { 
+      text-align: center; 
+      padding: 30px; 
+      font-size: 1.5em; 
+      color: white; 
     }
-
+    
     .error {
-      background: #ff6b6b;
-      color: white;
-      padding: 20px;
+      background: #ff6b6b; 
+      color: white; 
+      padding: 20px; 
       border-radius: 10px;
-      text-align: center;
+      text-align: center; 
       margin: 20px 0;
+      font-size: 1.2em;
     }
 
-    @media (max-width: 900px) {
-      .winners-grid { grid-template-columns: 1fr; }
-      .winner-card.top1 { transform: scale(1); border: 3px solid gold; }
+    @media (max-width: 1200px) {
+      .winners-grid { 
+        grid-template-columns: 1fr; 
+        gap: 30px;
+      }
+      
+      .winner-card.top1 { 
+        transform: translateY(0);
+        border: 4px solid gold; 
+      }
+      
+      .container {
+        max-width: 600px;
+      }
     }
   </style>
+
 </head>
 <body>
   <div class="container">
+
     <div class="input-section" id="inputSection">
       <h1>🎉 CÔNG BỐ NGƯỜI TRÚNG GIẢI 🎉</h1>
       <div class="input-group">
         <input type="text" id="code1" placeholder="#001" maxlength="4">
         <input type="text" id="code2" placeholder="#002" maxlength="4">
         <input type="text" id="code3" placeholder="#003" maxlength="4">
-        <button class="btn" onclick="loadWinners()">HIỂN THỊ NGƯỜI THẮNG</button>
-      </div>
-      <div style="text-align: center; color: #666; margin-top: 10px;">
-        Nhập 3 mã số (vd: #001, #002, #003) — người top 1 sẽ hiển thị ở giữa.
+        <button class="btn" onclick="loadWinners()">HIỂN THỊ</button>
       </div>
     </div>
 
-    <div class="loading" id="loading" style="display: none;">⏳ Đang tải thông tin...</div>
+    <div class="loading" id="loading" style="display: none;">⏳ Đang tải...</div>
     <div class="error" id="error" style="display: none;"></div>
 
     <div class="winners-section" id="winnersSection">
       <div class="winners-grid" id="winnersGrid"></div>
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -175,12 +204,10 @@
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
     async function loadWinners() {
-      const code1 = document.getElementById('code1').value.trim();
-      const code2 = document.getElementById('code2').value.trim();
-      const code3 = document.getElementById('code3').value.trim();
-      if (!code1 || !code2 || !code3) return alert('Vui lòng nhập đủ 3 mã số!');
-
-      const codes = [code1, code2, code3].map(c => (c.startsWith('#') ? c : '#' + c));
+      const codes = ['code1','code2','code3'].map(id => {
+        let v = document.getElementById(id).value.trim().toUpperCase();
+        return v.startsWith('#') ? v : ('#' + v);
+      });
 
       document.getElementById('loading').style.display = 'block';
       document.getElementById('error').style.display = 'none';
@@ -192,42 +219,41 @@
 
         Papa.parse(csvText, {
           header: false,
-          complete: function(results) {
+          complete: (results) => {
             const data = results.data;
             const found = [];
 
             for (let i = 1; i < data.length; i++) {
-              const row = data[i];
-              const code = row[4];
-              if (codes.includes(code)) {
+              if (data[i] && data[i][4] && codes.includes(data[i][4])) {
                 found.push({
-                  name: row[0],
-                  school: row[1],
-                  age: row[2],
-                  image: row[3],
-                  code: row[4]
+                  name: data[i][0] || 'N/A',
+                  school: data[i][1] || 'N/A',
+                  age: data[i][2] || 'N/A',
+                  image: data[i][3] || '',
+                  code: data[i][4]
                 });
               }
             }
 
             if (found.length !== 3) {
-              document.getElementById('error').textContent = '❌ Không tìm đủ 3 người thắng!';
-              document.getElementById('error').style.display = 'block';
-              document.getElementById('loading').style.display = 'none';
+              showError("❌ Không tìm đủ 3 người trúng giải!");
               return;
             }
 
-            // sắp xếp theo thứ tự: top2 - top1 - top3
             const ordered = [found[1], found[0], found[2]];
             displayWinners(ordered);
-            document.getElementById('loading').style.display = 'none';
           }
         });
-      } catch (e) {
-        document.getElementById('error').textContent = '❌ Lỗi tải dữ liệu';
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('loading').style.display = 'none';
+      } catch (error) {
+        showError("❌ Lỗi kết nối Google Sheets!");
+        console.error(error);
       }
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').textContent = msg;
+      document.getElementById('error').style.display = 'block';
     }
 
     function displayWinners(winners) {
@@ -236,10 +262,12 @@
 
       winners.forEach((w, i) => {
         const card = document.createElement('div');
-        card.className = 'winner-card';
-        if (i === 1) card.classList.add('top1'); // Người top 1 ở giữa
+        card.className = `winner-card ${i === 1 ? 'top1' : ''}`;
+        
         card.innerHTML = `
-          <img src="${w.image}" class="winner-image" alt="${w.name}">
+          <div class="winner-image-wrapper">
+            <img src="${w.image}" class="winner-image" alt="${w.name}">
+          </div>
           <div class="winner-info">
             <div class="winner-code">${i === 1 ? '🏆' : '🎖️'} ${w.code}</div>
             <div class="winner-name">${w.name}</div>
@@ -247,23 +275,14 @@
             <div class="winner-age">Tuổi: ${w.age}</div>
           </div>
         `;
+        
         grid.appendChild(card);
       });
 
+      document.getElementById('loading').style.display = 'none';
       document.getElementById('winnersSection').classList.add('show');
-      grid.scrollIntoView({ behavior: 'smooth' });
     }
-
-    ['code1','code2','code3'].forEach(id=>{
-      document.getElementById(id).addEventListener('input', e=>{
-        let val = e.target.value.toUpperCase();
-        if (val && !val.startsWith('#')) val = '#' + val;
-        e.target.value = val;
-      });
-      document.getElementById(id).addEventListener('keypress', e=>{
-        if (e.key === 'Enter') loadWinners();
-      });
-    });
   </script>
+
 </body>
 </html>
