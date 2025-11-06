@@ -4,218 +4,353 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Công bố người trúng giải</title>
-
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
 
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
       min-height: 100vh;
-      padding: 20px;
+      padding: 40px 20px;
       color: #333;
     }
 
     .container { 
-      max-width: 1800px; 
-      margin: 0 auto; 
+      max-width: 100%;
+      margin: 0 auto;
     }
 
+    /* Input Section */
     .input-section {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      margin-bottom: 80px;
-      position: relative;
-      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      margin: 0 auto 100px;
+      max-width: 800px;
     }
 
     .input-section h1 {
       text-align: center;
-      color: #667eea;
-      margin-bottom: 20px;
-      font-size: 2em;
-      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      font-weight: 900;
+      letter-spacing: 1px;
     }
 
     .input-group {
       display: flex;
-      gap: 15px;
+      gap: 20px;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
     }
 
     .input-group input {
-      padding: 15px 20px;
-      font-size: 1.2em;
-      border: 2px solid #667eea;
-      border-radius: 10px;
-      width: 150px;
+      padding: 18px 25px;
+      font-size: 1.3em;
+      border: 3px solid #667eea;
+      border-radius: 15px;
+      width: 160px;
       text-align: center;
       font-weight: bold;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #764ba2;
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
 
     .btn {
-      padding: 15px 40px;
-      font-size: 1.2em;
+      padding: 18px 50px;
+      font-size: 1.3em;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 15px;
       cursor: pointer;
       font-weight: bold;
-      transition: transform 0.2s;
+      transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
 
-    .btn:hover { transform: scale(1.05); }
+    .btn:hover { 
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+    }
 
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Winners Section */
     .winners-section { 
       display: none;
-      position: relative;
-      z-index: 1;
+      padding-top: 40px;
     }
     
-    .winners-section.show { display: block; }
+    .winners-section.show { 
+      display: block; 
+    }
 
-    .winners-grid {
+    .winners-container {
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      gap: 80px;
-      padding: 40px 20px;
-      flex-wrap: wrap;
+      gap: 120px;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Winner Cards */
+    .winner-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .winner-card {
       background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      width: 380px;
-      flex-shrink: 0;
+      border-radius: 30px;
+      overflow: visible;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      width: 450px;
+      transition: all 0.4s;
+      position: relative;
     }
 
-    .winner-card.position-2,
-    .winner-card.position-3 {
-      margin-top: 60px;
+    .winner-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
-    .winner-card.top1 {
-      border: 6px solid gold;
-      box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+    /* Top 1 Styling */
+    .winner-wrapper.rank-1 .winner-card {
+      border: 8px solid #FFD700;
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 20px 60px rgba(0,0,0,0.4);
+      transform: scale(1.1);
     }
 
-    .winner-image-wrapper {
+    .winner-wrapper.rank-1 .winner-card:hover {
+      transform: scale(1.1) translateY(-10px);
+    }
+
+    /* Second and Third Place */
+    .winner-wrapper.rank-2,
+    .winner-wrapper.rank-3 {
+      margin-top: 80px;
+    }
+
+    .winner-wrapper.rank-2 .winner-card {
+      border: 6px solid #C0C0C0;
+    }
+
+    .winner-wrapper.rank-3 .winner-card {
+      border: 6px solid #CD7F32;
+    }
+
+    /* Image Container */
+    .winner-image-container {
       width: 100%;
-      height: 400px;
-      background: #f4f4f4;
+      height: 500px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
-      overflow: hidden;
+      padding: 30px;
+      border-radius: 30px 30px 0 0;
     }
 
     .winner-image {
       max-width: 100%;
       max-height: 100%;
-      width: auto;
-      height: auto;
       object-fit: contain;
-      display: block;
+      border-radius: 15px;
     }
 
+    /* Info Section */
     .winner-info {
-      padding: 30px 20px;
+      padding: 35px 30px;
       text-align: center;
       background: white;
+      border-radius: 0 0 30px 30px;
+    }
+
+    .rank-badge {
+      display: inline-block;
+      padding: 10px 25px;
+      border-radius: 50px;
+      font-size: 2.5em;
+      font-weight: 900;
+      margin-bottom: 15px;
+    }
+
+    .winner-wrapper.rank-1 .rank-badge {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .winner-wrapper.rank-2 .rank-badge {
+      background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+      color: white;
+    }
+
+    .winner-wrapper.rank-3 .rank-badge {
+      background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+      color: white;
     }
 
     .winner-code { 
-      font-size: 2.2em; 
-      font-weight: bold; 
+      font-size: 2.5em; 
+      font-weight: 900; 
       color: #667eea; 
-      margin-bottom: 12px; 
+      margin-bottom: 15px;
+      letter-spacing: 2px;
     }
     
     .winner-name { 
-      font-size: 1.6em; 
+      font-size: 2em; 
       font-weight: bold; 
-      margin-bottom: 10px; 
-      color: #333;
+      margin-bottom: 12px; 
+      color: #1a202c;
     }
     
     .winner-school { 
-      font-size: 1.2em; 
-      color: #666; 
-      margin-bottom: 8px; 
+      font-size: 1.4em; 
+      color: #4a5568; 
+      margin-bottom: 10px;
+      line-height: 1.4;
     }
     
     .winner-age { 
-      font-size: 1.1em; 
-      color: #999; 
+      font-size: 1.2em; 
+      color: #718096;
+      font-weight: 600;
     }
 
+    /* Loading and Error */
     .loading { 
       text-align: center; 
-      padding: 30px; 
-      font-size: 1.5em; 
-      color: white; 
+      padding: 50px; 
+      font-size: 2em; 
+      color: white;
+      font-weight: bold;
     }
     
     .error {
-      background: #ff6b6b; 
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
       color: white; 
-      padding: 20px; 
-      border-radius: 10px;
+      padding: 30px; 
+      border-radius: 20px;
       text-align: center; 
-      margin: 20px auto;
-      font-size: 1.2em;
-      max-width: 600px;
+      margin: 40px auto;
+      font-size: 1.4em;
+      max-width: 700px;
+      box-shadow: 0 10px 40px rgba(255, 107, 107, 0.4);
+      font-weight: bold;
     }
 
-    @media (max-width: 1400px) {
-      .winners-grid { 
-        gap: 40px;
+    /* Responsive */
+    @media (max-width: 1600px) {
+      .winners-container {
+        gap: 80px;
       }
-      
+
       .winner-card {
-        width: 320px;
+        width: 400px;
       }
 
-      .winner-image-wrapper {
-        height: 350px;
+      .winner-image-container {
+        height: 450px;
       }
     }
 
-    @media (max-width: 1100px) {
-      .winners-grid { 
+    @media (max-width: 1300px) {
+      .winners-container {
         flex-direction: column;
         align-items: center;
-        gap: 40px;
+        gap: 60px;
       }
-      
-      .winner-card.position-2,
-      .winner-card.position-3 {
+
+      .winner-wrapper.rank-2,
+      .winner-wrapper.rank-3 {
         margin-top: 0;
+      }
+
+      .winner-wrapper.rank-1 .winner-card {
+        transform: scale(1);
+      }
+
+      .winner-wrapper.rank-1 .winner-card:hover {
+        transform: translateY(-10px);
       }
 
       .winner-card {
         width: 100%;
-        max-width: 450px;
+        max-width: 500px;
       }
-      
-      .container {
-        max-width: 600px;
+    }
+
+    @media (max-width: 600px) {
+      .input-section {
+        padding: 25px;
+      }
+
+      .input-section h1 {
+        font-size: 1.8em;
+      }
+
+      .input-group input {
+        width: 120px;
+        font-size: 1.1em;
+        padding: 15px 20px;
+      }
+
+      .btn {
+        padding: 15px 35px;
+        font-size: 1.1em;
+      }
+
+      .winner-card {
+        max-width: 100%;
+      }
+
+      .winner-image-container {
+        height: 350px;
+        padding: 20px;
+      }
+
+      .winner-code {
+        font-size: 2em;
+      }
+
+      .winner-name {
+        font-size: 1.6em;
+      }
+
+      .winner-school {
+        font-size: 1.2em;
       }
     }
   </style>
-
 </head>
 <body>
   <div class="container">
-
     <div class="input-section" id="inputSection">
       <h1>🎉 CÔNG BỐ NGƯỜI TRÚNG GIẢI 🎉</h1>
       <div class="input-group">
@@ -226,13 +361,12 @@
       </div>
     </div>
 
-    <div class="loading" id="loading" style="display: none;">⏳ Đang tải...</div>
+    <div class="loading" id="loading" style="display: none;">⏳ Đang tải dữ liệu...</div>
     <div class="error" id="error" style="display: none;"></div>
 
     <div class="winners-section" id="winnersSection">
-      <div class="winners-grid" id="winnersGrid"></div>
+      <div class="winners-container" id="winnersContainer"></div>
     </div>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -241,7 +375,7 @@
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
     async function loadWinners() {
-      const codes = ['code1','code2','code3'].map(id => {
+      const codes = ['code1', 'code2', 'code3'].map(id => {
         let v = document.getElementById(id).value.trim().toUpperCase();
         return v.startsWith('#') ? v : ('#' + v);
       });
@@ -252,6 +386,8 @@
 
       try {
         const res = await fetch(SHEET_CSV_URL);
+        if (!res.ok) throw new Error('Network error');
+        
         const csvText = await res.text();
 
         Papa.parse(csvText, {
@@ -262,19 +398,20 @@
             const found = [];
 
             for (let i = 1; i < data.length; i++) {
-              if (data[i] && data[i][4] && codes.includes(data[i][4])) {
+              const row = data[i];
+              if (row && row[4] && codes.includes(row[4].trim().toUpperCase())) {
                 found.push({
-                  name: data[i][0] || 'N/A',
-                  school: data[i][1] || 'N/A',
-                  age: data[i][2] || 'N/A',
-                  image: data[i][3] || '',
-                  code: data[i][4]
+                  name: row[0] || 'N/A',
+                  school: row[1] || 'N/A',
+                  age: row[2] || 'N/A',
+                  image: row[3] || '',
+                  code: row[4].trim().toUpperCase()
                 });
               }
             }
 
-            if (found.length !== 3) {
-              showError("❌ Không tìm đủ 3 người trúng giải! Tìm thấy: " + found.length);
+            if (found.length < 3) {
+              showError(`❌ Không tìm đủ 3 người trúng giải! Chỉ tìm thấy: ${found.length}`);
               return;
             }
 
@@ -282,12 +419,12 @@
             displayWinners(ordered);
           },
           error: (error) => {
-            showError("❌ Lỗi phân tích dữ liệu!");
+            showError("❌ Lỗi phân tích dữ liệu từ Google Sheets!");
             console.error(error);
           }
         });
       } catch (error) {
-        showError("❌ Lỗi kết nối Google Sheets!");
+        showError("❌ Không thể kết nối đến Google Sheets!");
         console.error(error);
       }
     }
@@ -299,32 +436,40 @@
     }
 
     function displayWinners(winners) {
-      const grid = document.getElementById('winnersGrid');
-      grid.innerHTML = '';
+      const container = document.getElementById('winnersContainer');
+      container.innerHTML = '';
 
-      winners.forEach((w, i) => {
-        const card = document.createElement('div');
-        card.className = `winner-card position-${i + 1} ${i === 1 ? 'top1' : ''}`;
+      const emojis = ['🥈', '🥇', '🥉'];
+      const rankNames = ['Hạng 2', 'Hạng 1', 'Hạng 3'];
+
+      winners.forEach((winner, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = `winner-wrapper rank-${index === 1 ? 1 : (index === 0 ? 2 : 3)}`;
         
-        card.innerHTML = `
-          <div class="winner-image-wrapper">
-            <img src="${w.image}" class="winner-image" alt="${w.name}" loading="lazy">
-          </div>
-          <div class="winner-info">
-            <div class="winner-code">${i === 1 ? '🏆' : '🎖️'} ${w.code}</div>
-            <div class="winner-name">${w.name}</div>
-            <div class="winner-school">${w.school}</div>
-            <div class="winner-age">Tuổi: ${w.age}</div>
+        wrapper.innerHTML = `
+          <div class="winner-card">
+            <div class="winner-image-container">
+              <img src="${winner.image}" 
+                   class="winner-image" 
+                   alt="${winner.name}"
+                   onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-size=%2240%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+            </div>
+            <div class="winner-info">
+              <div class="rank-badge">${emojis[index]}</div>
+              <div class="winner-code">${winner.code}</div>
+              <div class="winner-name">${winner.name}</div>
+              <div class="winner-school">${winner.school}</div>
+              <div class="winner-age">Tuổi: ${winner.age}</div>
+            </div>
           </div>
         `;
         
-        grid.appendChild(card);
+        container.appendChild(wrapper);
       });
 
       document.getElementById('loading').style.display = 'none';
       document.getElementById('winnersSection').classList.add('show');
     }
   </script>
-
 </body>
 </html>
