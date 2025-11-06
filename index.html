@@ -16,7 +16,6 @@
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
       min-height: 100vh;
       padding: 40px 20px;
-      color: #333;
     }
 
     .container { 
@@ -31,7 +30,7 @@
       padding: 40px;
       border-radius: 25px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      margin: 0 auto 100px;
+      margin: 0 auto 120px;
       max-width: 800px;
     }
 
@@ -92,14 +91,10 @@
       box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
     }
 
-    .btn:active {
-      transform: translateY(-1px);
-    }
-
     /* Winners Section */
     .winners-section { 
       display: none;
-      padding-top: 40px;
+      padding-top: 20px;
     }
     
     .winners-section.show { 
@@ -110,135 +105,127 @@
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      gap: 120px;
-      max-width: 1800px;
+      gap: 100px;
+      max-width: 1900px;
       margin: 0 auto;
       padding: 0 40px;
     }
 
-    /* Winner Cards */
+    /* Winner Wrapper */
     .winner-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 20px;
     }
 
-    .winner-card {
+    /* Image Card - Ôm sát ảnh */
+    .winner-image-card {
       background: white;
-      border-radius: 30px;
-      overflow: visible;
+      padding: 20px;
+      border-radius: 25px;
       box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-      width: 450px;
       transition: all 0.4s;
-      position: relative;
+      display: inline-block;
     }
 
-    .winner-card:hover {
+    .winner-wrapper.rank-1 .winner-image-card {
+      border: 8px solid #FFD700;
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 20px 60px rgba(0,0,0,0.4);
+      transform: scale(1.15);
+      padding: 25px;
+    }
+
+    .winner-wrapper.rank-2 .winner-image-card {
+      border: 6px solid #C0C0C0;
+    }
+
+    .winner-wrapper.rank-3 .winner-image-card {
+      border: 6px solid #CD7F32;
+    }
+
+    .winner-image-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
-    /* Top 1 Styling */
-    .winner-wrapper.rank-1 .winner-card {
-      border: 8px solid #FFD700;
-      box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 20px 60px rgba(0,0,0,0.4);
-      transform: scale(1.1);
+    .winner-wrapper.rank-1 .winner-image-card:hover {
+      transform: scale(1.15) translateY(-10px);
     }
 
-    .winner-wrapper.rank-1 .winner-card:hover {
-      transform: scale(1.1) translateY(-10px);
-    }
-
-    /* Second and Third Place */
-    .winner-wrapper.rank-2,
-    .winner-wrapper.rank-3 {
-      margin-top: 80px;
-    }
-
-    .winner-wrapper.rank-2 .winner-card {
-      border: 6px solid #C0C0C0;
-    }
-
-    .winner-wrapper.rank-3 .winner-card {
-      border: 6px solid #CD7F32;
-    }
-
-    /* Image Container */
-    .winner-image-container {
-      width: 100%;
-      height: 500px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-      border-radius: 30px 30px 0 0;
-    }
-
+    /* Image */
     .winner-image {
-      max-width: 100%;
-      max-height: 100%;
+      display: block;
+      width: 450px;
+      height: 450px;
       object-fit: contain;
       border-radius: 15px;
     }
 
-    /* Info Section */
+    .winner-wrapper.rank-1 .winner-image {
+      width: 500px;
+      height: 500px;
+    }
+
+    /* Second and Third Place spacing */
+    .winner-wrapper.rank-2,
+    .winner-wrapper.rank-3 {
+      margin-top: 100px;
+    }
+
+    /* Info Section - Compact */
     .winner-info {
-      padding: 35px 30px;
       text-align: center;
-      background: white;
-      border-radius: 0 0 30px 30px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      min-width: 400px;
+    }
+
+    .winner-wrapper.rank-1 .winner-info {
+      min-width: 450px;
+      padding: 30px 40px;
     }
 
     .rank-badge {
-      display: inline-block;
-      padding: 10px 25px;
-      border-radius: 50px;
-      font-size: 2.5em;
-      font-weight: 900;
-      margin-bottom: 15px;
-    }
-
-    .winner-wrapper.rank-1 .rank-badge {
-      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .winner-wrapper.rank-2 .rank-badge {
-      background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
-      color: white;
-    }
-
-    .winner-wrapper.rank-3 .rank-badge {
-      background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
-      color: white;
+      font-size: 3em;
+      margin-bottom: 10px;
     }
 
     .winner-code { 
-      font-size: 2.5em; 
+      font-size: 2.2em; 
       font-weight: 900; 
       color: #667eea; 
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       letter-spacing: 2px;
+    }
+
+    .winner-wrapper.rank-1 .winner-code {
+      font-size: 2.5em;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .winner-name { 
-      font-size: 2em; 
+      font-size: 1.8em; 
       font-weight: bold; 
-      margin-bottom: 12px; 
+      margin-bottom: 8px; 
       color: #1a202c;
     }
     
     .winner-school { 
-      font-size: 1.4em; 
+      font-size: 1.2em; 
       color: #4a5568; 
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       line-height: 1.4;
     }
     
     .winner-age { 
-      font-size: 1.2em; 
+      font-size: 1.1em; 
       color: #718096;
       font-weight: 600;
     }
@@ -266,25 +253,35 @@
     }
 
     /* Responsive */
-    @media (max-width: 1600px) {
+    @media (max-width: 1700px) {
       .winners-container {
-        gap: 80px;
+        gap: 70px;
       }
 
-      .winner-card {
-        width: 400px;
+      .winner-image {
+        width: 380px;
+        height: 380px;
       }
 
-      .winner-image-container {
-        height: 450px;
+      .winner-wrapper.rank-1 .winner-image {
+        width: 430px;
+        height: 430px;
+      }
+
+      .winner-info {
+        min-width: 350px;
+      }
+
+      .winner-wrapper.rank-1 .winner-info {
+        min-width: 400px;
       }
     }
 
-    @media (max-width: 1300px) {
+    @media (max-width: 1400px) {
       .winners-container {
         flex-direction: column;
         align-items: center;
-        gap: 60px;
+        gap: 70px;
       }
 
       .winner-wrapper.rank-2,
@@ -292,17 +289,22 @@
         margin-top: 0;
       }
 
-      .winner-wrapper.rank-1 .winner-card {
+      .winner-wrapper.rank-1 .winner-image-card {
         transform: scale(1);
       }
 
-      .winner-wrapper.rank-1 .winner-card:hover {
+      .winner-wrapper.rank-1 .winner-image-card:hover {
         transform: translateY(-10px);
       }
 
-      .winner-card {
-        width: 100%;
-        max-width: 500px;
+      .winner-image {
+        width: 450px;
+        height: 450px;
+      }
+
+      .winner-wrapper.rank-1 .winner-image {
+        width: 500px;
+        height: 500px;
       }
     }
 
@@ -326,25 +328,40 @@
         font-size: 1.1em;
       }
 
-      .winner-card {
-        max-width: 100%;
+      .winners-container {
+        padding: 0 20px;
+        gap: 50px;
       }
 
-      .winner-image-container {
+      .winner-image {
+        width: 320px;
+        height: 320px;
+      }
+
+      .winner-wrapper.rank-1 .winner-image {
+        width: 350px;
         height: 350px;
-        padding: 20px;
+      }
+
+      .winner-info {
+        min-width: 300px;
+        padding: 20px 25px;
+      }
+
+      .winner-wrapper.rank-1 .winner-info {
+        min-width: 320px;
       }
 
       .winner-code {
-        font-size: 2em;
+        font-size: 1.8em;
       }
 
       .winner-name {
-        font-size: 1.6em;
+        font-size: 1.5em;
       }
 
       .winner-school {
-        font-size: 1.2em;
+        font-size: 1.1em;
       }
     }
   </style>
@@ -440,27 +457,24 @@
       container.innerHTML = '';
 
       const emojis = ['🥈', '🥇', '🥉'];
-      const rankNames = ['Hạng 2', 'Hạng 1', 'Hạng 3'];
 
       winners.forEach((winner, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = `winner-wrapper rank-${index === 1 ? 1 : (index === 0 ? 2 : 3)}`;
         
         wrapper.innerHTML = `
-          <div class="winner-card">
-            <div class="winner-image-container">
-              <img src="${winner.image}" 
-                   class="winner-image" 
-                   alt="${winner.name}"
-                   onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-size=%2240%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-            </div>
-            <div class="winner-info">
-              <div class="rank-badge">${emojis[index]}</div>
-              <div class="winner-code">${winner.code}</div>
-              <div class="winner-name">${winner.name}</div>
-              <div class="winner-school">${winner.school}</div>
-              <div class="winner-age">Tuổi: ${winner.age}</div>
-            </div>
+          <div class="winner-image-card">
+            <img src="${winner.image}" 
+                 class="winner-image" 
+                 alt="${winner.name}"
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-size=%2240%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+          </div>
+          <div class="winner-info">
+            <div class="rank-badge">${emojis[index]}</div>
+            <div class="winner-code">${winner.code}</div>
+            <div class="winner-name">${winner.name}</div>
+            <div class="winner-school">${winner.school}</div>
+            <div class="winner-age">Tuổi: ${winner.age}</div>
           </div>
         `;
         
