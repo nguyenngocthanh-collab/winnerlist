@@ -4,179 +4,235 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Công bố người trúng giải</title>
+
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
-      background: #111;
-      font-family: Arial, sans-serif;
-      color: white;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       padding: 20px;
+      color: #333;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: auto;
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    .input-section {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
     }
 
-    h1 {
+    .input-section h1 {
       text-align: center;
+      color: #667eea;
       margin-bottom: 20px;
-      color: #ffd54f;
-      font-size: 2.2em;
+      font-size: 2em;
       font-weight: bold;
     }
 
-    .input-box {
+    .input-group {
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 15px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .input-box input {
-      padding: 15px;
+    .input-group input {
+      padding: 15px 20px;
       font-size: 1.2em;
-      width: 120px;
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      width: 150px;
       text-align: center;
-      border-radius: 8px;
-      border: 2px solid #ffeb3b;
-      background: #222;
-      color: #fff;
+      font-weight: bold;
     }
 
     .btn {
-      padding: 15px 35px;
-      background: #ffeb3b;
-      color: #111;
-      font-weight: bold;
+      padding: 15px 40px;
       font-size: 1.2em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
       border-radius: 10px;
       cursor: pointer;
-      border: none;
+      font-weight: bold;
+      transition: transform 0.2s;
     }
 
-    /* ----- GRID HIỂN THỊ 3 NGƯỜI THẮNG ----- */
+    .btn:hover { transform: scale(1.05); }
+
+    .winners-section { display: none; }
+    .winners-section.show { display: block; }
+
     .winners-grid {
       display: grid;
-      grid-template-columns: 1fr 1.2fr 1fr; /* Top 1 ở giữa lớn hơn */
-      gap: 25px;
-      margin-top: 40px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
       align-items: start;
     }
 
     .winner-card {
-      background: #222;
-      border-radius: 15px;
-      padding-bottom: 15px;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+      display: flex;
+      flex-direction: column;
     }
 
-    .winner-card.champion {
-      transform: scale(1.15);
-      border: 4px solid gold;
-      box-shadow: 0 0 35px gold;
+    .winner-card.top1 {
+      transform: scale(1.12);
+      border: 5px solid gold;
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.6);
+    }
+
+    /* ✅ Giữ nguyên tỷ lệ ảnh */
+    .winner-image-wrapper {
+      width: 100%;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
     }
 
     .winner-image {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      border-bottom: 3px solid #000;
-      border-radius: 15px 15px 0 0;
-      background: #333;
+      max-width: 100%;
+      max-height: 350px;
+      object-fit: contain;
     }
 
-    .code {
-      font-size: 2em;
-      color: #ffeb3b;
-      font-weight: bold;
-      margin-top: 10px;
+    .winner-info {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .winner-code { font-size: 2em; font-weight: bold; color: #667eea; margin-bottom: 10px; }
+    .winner-name { font-size: 1.5em; font-weight: bold; margin-bottom: 5px; }
+    .winner-school { font-size: 1.1em; color: #666; margin-bottom: 5px; }
+    .winner-age { font-size: 1em; color: #999; }
+
+    .loading { text-align: center; padding: 30px; font-size: 1.5em; color: white; }
+    .error {
+      background: #ff6b6b; color: white; padding: 20px; border-radius: 10px;
+      text-align: center; margin: 20px 0;
     }
 
     @media (max-width: 900px) {
-      .winners-grid {
-        grid-template-columns: 1fr;
-      }
-      .winner-card.champion {
-        transform: none;
-      }
+      .winners-grid { grid-template-columns: 1fr; }
+      .winner-card.top1 { transform: scale(1); border: 3px solid gold; }
     }
   </style>
+
 </head>
 <body>
+  <div class="container">
 
-<div class="container">
-  <h1>🎉 CÔNG BỐ NGƯỜI TRÚNG GIẢI 🎉</h1>
+    <div class="input-section" id="inputSection">
+      <h1>🎉 CÔNG BỐ NGƯỜI TRÚNG GIẢI 🎉</h1>
+      <div class="input-group">
+        <input type="text" id="code1" placeholder="#001" maxlength="4">
+        <input type="text" id="code2" placeholder="#002" maxlength="4">
+        <input type="text" id="code3" placeholder="#003" maxlength="4">
+        <button class="btn" onclick="loadWinners()">HIỂN THỊ</button>
+      </div>
+    </div>
 
-  <div class="input-box">
-    <input id="c1" placeholder="#001">
-    <input id="c2" placeholder="#002">
-    <input id="c3" placeholder="#003">
-    <button class="btn" onclick="loadData()">HIỂN THỊ</button>
+    <div class="loading" id="loading" style="display: none;">⏳ Đang tải...</div>
+    <div class="error" id="error" style="display: none;"></div>
+
+    <div class="winners-section" id="winnersSection">
+      <div class="winners-grid" id="winnersGrid"></div>
+    </div>
+
   </div>
 
-  <div id="display"></div>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    const SHEET_ID = "1ZID_T4OaP5fUs2q1iQXefVBs0H--MgM9DtBQz2WOm7M";
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-<script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/1ZID_T4OaP5fUs2q1iQXefVBs0H--MgM9DtBQz2WOm7M/export?format=csv";
-
-function normalize(code){
-  code = code.trim().toUpperCase();
-  return code.startsWith("#") ? code : "#" + code;
-}
-
-async function loadData() {
-  let codes = [
-    normalize(document.getElementById("c1").value),
-    normalize(document.getElementById("c2").value),
-    normalize(document.getElementById("c3").value)
-  ];
-
-  const response = await fetch(CSV_URL);
-  const csv = await response.text();
-  const parsed = Papa.parse(csv, { header: false }).data;
-
-  let list = [];
-  parsed.slice(1).forEach(row => {
-    if(row.length >= 5 && codes.includes(row[4])){
-      list.push({
-        name: row[0],
-        school: row[1],
-        age: row[2],
-        image: row[3],
-        code: row[4]
+    async function loadWinners() {
+      const codes = ['code1','code2','code3'].map(id => {
+        let v = document.getElementById(id).value.trim().toUpperCase();
+        return v.startsWith('#') ? v : ('#' + v);
       });
+
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('error').style.display = 'none';
+
+      try {
+        const res = await fetch(SHEET_CSV_URL);
+        const csvText = await res.text();
+
+        Papa.parse(csvText, {
+          header: false,
+          complete: (results) => {
+            const data = results.data;
+            const found = [];
+
+            for (let i = 1; i < data.length; i++) {
+              if (codes.includes(data[i][4])) {
+                found.push({
+                  name: data[i][0],
+                  school: data[i][1],
+                  age: data[i][2],
+                  image: data[i][3],
+                  code: data[i][4]
+                });
+              }
+            }
+
+            if (found.length !== 3) {
+              showError("❌ Không tìm đủ 3 người trúng giải!");
+              return;
+            }
+
+            // Top trung tâm
+            const ordered = [found[1], found[0], found[2]];
+            displayWinners(ordered);
+          }
+        });
+      } catch {
+        showError("❌ Lỗi kết nối Google Sheets!");
+      }
     }
-  });
 
-  if(list.length !== 3){
-    document.getElementById("display").innerHTML = "<h2 style='text-align:center;color:red;'>Không tìm đủ 3 người!</h2>";
-    return;
-  }
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').textContent = msg;
+      document.getElementById('error').style.display = 'block';
+    }
 
-  // Đưa TOP 1 vào giữa
-  list = [list[1], list[0], list[2]];
+    function displayWinners(winners) {
+      const grid = document.getElementById('winnersGrid');
+      grid.innerHTML = '';
 
-  document.getElementById("display").innerHTML = `
-    <div class="winners-grid">
-      ${list.map((w,i)=>`
-        <div class="winner-card ${i===1 ? 'champion' : ''}">
-          <img class="winner-image" src="${w.image}">
-          <div class="code">${w.code}</div>
-          <div>${w.name}</div>
-          <div>${w.school}</div>
-          <div>Tuổi: ${w.age}</div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
-</script>
+      winners.forEach((w, i) => {
+        grid.innerHTML += `
+          <div class="winner-card ${i === 1 ? 'top1' : ''}">
+            <div class="winner-image-wrapper">
+              <img src="${w.image}" class="winner-image">
+            </div>
+            <div class="winner-info">
+              <div class="winner-code">${i === 1 ? '🏆' : '🎖️'} ${w.code}</div>
+              <div class="winner-name">${w.name}</div>
+              <div class="winner-school">${w.school}</div>
+              <div class="winner-age">Tuổi: ${w.age}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('winnersSection').classList.add('show');
+    }
+  </script>
 
 </body>
 </html>
